@@ -6,19 +6,33 @@ import './App.css'
 function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnswerShown, setIsAnswerShown] = useState(false);
+  const [userGuess, setUserGuess] = useState('');
+  const [feedback, setFeedback] = useState('');
 
   const handleNext = () => {
     setIsAnswerShown(false); 
     setCurrentIndex((prevIndex) => (prevIndex + 1) % cardsData.length);
+    setUserGuess('');
+    setFeedback('');
   };
 
   const handleBack = () => {
     setIsAnswerShown(false);
     setCurrentIndex((prevIndex) => (prevIndex - 1 + cardsData.length) % cardsData.length);
+    setUserGuess('');
+    setFeedback('');
   };
 
   const handleCardClick = () => {
     setIsAnswerShown(!isAnswerShown);
+  };
+
+  const handleSubmit = () => {
+    if (userGuess.toLowerCase() === cardsData[currentIndex].answer.toLowerCase()) {
+      setFeedback('Correct!');
+    } else {
+      setFeedback('Incorrect!');
+    }
   };
 
   return (
@@ -32,11 +46,20 @@ function App() {
         isAnswerShown={isAnswerShown}
         onCardClick={handleCardClick}
       />
+      <div className='input-container'>
+        <input 
+          type="text" 
+          value={userGuess}
+          onChange={(e) => setUserGuess(e.target.value)}
+          placeholder="Enter your guess"
+        />
+        <button onClick={handleSubmit}>Submit</button>
+        {feedback && <p className="feedback">{feedback}</p>}
+      </div>
       <div className='button-container'>
         <button onClick={handleBack} disabled={currentIndex === 0}>Back</button>
         <button onClick={handleNext} disabled={currentIndex === cardsData.length - 1}>Next</button>
       </div>
-
     </div>
   );
 }
